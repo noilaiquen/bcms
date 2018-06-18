@@ -2,7 +2,7 @@
 if (!function_exists('select_box_menu')) {
 	function select_box_menu($data,$parent = 0,$str='',$select=0) {
 		foreach ($data as $val) {
-			$id = $val['menu_id'];
+			$id = $val['id'];
 			$name = $val['name'];
 			if ($val['parent_id'] == $parent) {
 				if ($select != 0 && $id == $select) {
@@ -31,7 +31,7 @@ if (!function_exists('hierarchy_menu')) {
             foreach ($cate_child as $key => $item){
                 if($item['parent_id'] == 0) {
                     echo '<li class="nav-item has-treeview menu-open">';
-                    echo '<a href="javascript:void(0)" onclick="removeMenu('.$item['menu_id'].')" class="nav-link active">';
+                    echo '<a href="javascript:void(0)" onclick="removeMenu('.$item['id'].')" class="nav-link active">';
                     echo '<i class="nav-icon fa '.$item['icon'].'"></i>';
                     // echo '<p>'.$char.$item['name'].'</p>';
                     echo '<p>'.$item['name'].'</p>';
@@ -39,14 +39,14 @@ if (!function_exists('hierarchy_menu')) {
                     echo '</li>';
                 } else {
                     echo '<li class="nav-item menu-open">';
-                    echo '<a href="javascript:void(0)" onclick="removeMenu('.$item['menu_id'].')" class="nav-link child-active">';
+                    echo '<a href="javascript:void(0)" onclick="removeMenu('.$item['id'].')" class="nav-link child-active">';
                     echo '<i class="nav-icon fa '.$item['icon'].'"></i>';
                     // echo '<p>'.$char.$item['name'].'</p>';
                     echo '<p>'.$item['name'].'</p>';
                     echo '</a>';
                     echo '</li>';
                 }
-                hierarchy_menu($data, $item['menu_id'], $char.'|---');
+                hierarchy_menu($data, $item['id'], $char.'|---');
             }
             echo '</ul>';
         }

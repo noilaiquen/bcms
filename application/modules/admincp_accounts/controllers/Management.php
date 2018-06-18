@@ -26,8 +26,8 @@ class Management extends MY_Controller {
     }
 
     public function add() {
+        modules::run('admincp/checkPerm', $this->module, 'w', true);
         if($_POST) {
-            modules::run('admincp/checkPerm', $this->module, 'w', true);
             $json = array();
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
@@ -70,8 +70,8 @@ class Management extends MY_Controller {
     }
 
     public function edit($id = 0) {
+        modules::run('admincp/checkPerm', $this->module, 'w', true);
         if($_POST) {
-            modules::run('admincp/checkPerm', $this->module, 'w', true);
             $json = array();
             $validate = $this->validateFormEdit();
             if($validate && !is_array($validate)) {
@@ -121,6 +121,7 @@ class Management extends MY_Controller {
     }
 
     public function ajax_loadContent() {
+        modules::run('admincp/checkPerm', $this->module, 'r', true);
         $per_page = $this->input->post('per_page');
         $start = $this->input->post('start');
         $results = $this->admincp_accounts_model->getsearchContent($per_page, $start);
@@ -146,6 +147,7 @@ class Management extends MY_Controller {
     }
 
     public function delete(){
+        modules::run('admincp/checkPerm', $this->module, 'd', true);
         $json = array();
         if(!empty($this->input->post('ids'))) {
             $ids = $this->input->post('ids');
@@ -169,6 +171,7 @@ class Management extends MY_Controller {
     }
 
     public function updateStatus() {
+        modules::run('admincp/checkPerm', $this->module, 'w', true);
         if(!empty($this->input->post('id'))) {
             $id = $this->input->post('id');
             if($this->input->post('status')==0){

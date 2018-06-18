@@ -38,6 +38,14 @@
                             <?php select_box_menu($menu) ?>
 						</select>
 					</div>
+					<div class="form-group">
+						<label for="">Module</label>
+						<select name="module" id="module" class="form-control">
+							<?php foreach($modules as $module) { ?>
+								<option value="<?=$module['name_function']?>"><?=$module['name']?></option>
+							<?php } ?>
+						</select>
+					</div>
 				</div>
 				<div class="card-footer">
 					<input type="submit" class="btn btn-primary" value="Submit" />
@@ -68,12 +76,7 @@
 				url: this.action,
 				type: 'POST',
 				dataType: 'JSON',
-				data: {
-					name: $('#name').val(),
-					href: $('#href').val(),
-					icon: $('#icon').val(),
-					parent: $('#parent').val()
-				},
+				data: $(this).serializeArray(),
 				beforeSend: function() {
 					dismissAlert();
 					showLoading();

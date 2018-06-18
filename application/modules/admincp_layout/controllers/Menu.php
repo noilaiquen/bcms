@@ -10,8 +10,10 @@ class Menu extends MY_Controller {
     }
 
     public function index() {
+        modules::run('admincp/checkPerm', $this->module, 'r');
         $this->breadcrumbs->set('Settings');
         $this->breadcrumbs->set('Menu');
+        $this->load->model('admincp_modules/admincp_modules_model');
 
         $filters = array(
             'site' => 'admin',
@@ -19,6 +21,7 @@ class Menu extends MY_Controller {
             'parent' => 0
         );
         $data['menu'] = $this->model->getMenus($filters);
+        $data['modules'] = $this->admincp_modules_model->getModules(array('status' => 1));
         $data['module'] = $this->module;
         $data['controller'] = $this->controller;
         $data['title'] = 'Admincp | menu';
@@ -47,6 +50,7 @@ class Menu extends MY_Controller {
     }
 
     public function ajax_loadContent() {
+        modules::run('admincp/checkPerm', $this->module, 'r', true);
         $filters = array(
             'site' => 'admin',
             // 'status' => 1,
@@ -62,20 +66,37 @@ class Menu extends MY_Controller {
             'status' => 1
         );
         $results = $this->model->getMenus($filters);
-        $data['menu_hierarchy'] = $this->buildMenuHierarchy($results);
+        $menuPermsView = $this->getMenuPermsView();
+        $data['menu_hierarchy'] = $this->buildMenuHierarchy($results, $menuPermsView);
         $data['module'] = $this->uri->segment(1);
         $this->load->view('menu/side_menu', $data);
     }
 
-    public function buildMenuHierarchy($menu, $parent_id = 0) {
+    public function buildMenuHierarchy($menu, $perm_view, $parent_id = 0) {
         $data = array();
         foreach($menu as $item) {
             if($item['parent_id'] == $parent_id) {
-                $item['child'] = $this->buildMenuHierarchy($menu, $item['menu_id']);
-                $data[] = $item;
+                $modules_function = explode('|', $item['modules_function']); 
+                if(!empty(array_intersect($modules_function, $perm_view))) {
+                    $item['child'] = $this->buildMenuHierarchy($menu, $perm_view, $item['id']);
+                    $data[] = $item;
+                }
             }
         }
         return $data;
+    }
+
+    private function getMenuPermsView() {
+        $account_perms = $_SESSION['account_info']['perms'];
+        $menuPermsView = array();
+        if(!empty($account_perms)) {
+            foreach($account_perms as $module => $perm) {
+                if(isset($perm['r'])) {
+                    $menuPermsView[] = $module;
+                }
+            }
+        }
+        return $menuPermsView;
     }
 
     private function validateForm(){
@@ -88,6 +109,14 @@ class Menu extends MY_Controller {
                 array(
                     'field' => 'name',
                     'label' => 'Name',
+                    'rules' => 'required',
+                    'errors' => array(
+                        'required' => '%s is required.',
+                    ),
+                ),
+                array(
+                    'field' => 'module',
+                    'label' => 'Module',
                     'rules' => 'required',
                     'errors' => array(
                         'required' => '%s is required.',

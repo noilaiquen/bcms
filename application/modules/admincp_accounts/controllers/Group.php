@@ -23,8 +23,8 @@ class Group extends MY_Controller {
     }
 
     public function add() {
+        modules::run('admincp/checkPerm', $this->module, 'w', true);
         if($_POST) {
-            modules::run('admincp/checkPerm', $this->module, 'w', true);
             $json = array();
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
@@ -61,8 +61,8 @@ class Group extends MY_Controller {
     }
 
     public function edit($id = 0) {
+        modules::run('admincp/checkPerm', $this->module, 'w', true);
         if($_POST) {
-            modules::run('admincp/checkPerm', $this->module, 'w', true);
             $json = array();
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
@@ -109,6 +109,7 @@ class Group extends MY_Controller {
     }
 
     public function ajax_loadContent() {
+        modules::run('admincp/checkPerm', $this->module, 'w', true);
         $per_page = $this->input->post('per_page');
         $start = $this->input->post('start');
 
