@@ -40,7 +40,8 @@ class Admincp_accounts_model extends CI_Model {
 	}
 	
 	function getTotalsearchContent(){
-        $this->db->select('*');
+		$this->db->select('*');
+		$this->db->where('id != 1');
 		if($this->input->post('search_content')!='' && $this->input->post('search_content')!='type here...'){
 			$this->db->where('(`username` LIKE "%'.$this->input->post('search_content').'%")');
         }

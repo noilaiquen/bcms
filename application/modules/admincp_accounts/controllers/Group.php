@@ -90,10 +90,10 @@ class Group extends MY_Controller {
                 $this->breadcrumbs->set('Group');
                 $this->breadcrumbs->set('Edit');
 
-                $this->load->model('admincp/admincp_model');
+                $this->load->model('admincp_modules/admincp_modules_model');
 
                 $data['perms'] = $this->admincp_groups_model->getPerms($id);
-                $data['modules'] = $this->admincp_model->getModules(array('status' => 1));
+                $data['modules'] = $this->admincp_modules_model->getModules(array('status' => 1));
                 $data['info'] = $this->admincp_groups_model->getByIndex('id', $id); 
                 $data['module'] = $this->module;
                 $data['controller'] = $this->controller;

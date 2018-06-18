@@ -1,16 +1,12 @@
 <?php
-class Admincp_groups_model extends CI_Model {
-    private $table = 'admincp_groups';
-
+class Admincp_modules_model extends CI_Model {
+	private $table = 'admincp_modules';
+	
     function getsearchContent($limit, $start){
 		$this->db->select('*');
 		$this->db->from($this->table);
 		$this->db->limit($limit, $start);
 		$this->db->order_by($this->input->post('func_sort'), $this->input->post('type_sort'));
-
-		if(isset($_SESSION['account_info']) && $_SESSION['account_info']['id'] != 1) {
-			$this->db->where('id != 1');
-		}
 		if($this->input->post('search_content')!='' && $this->input->post('search_content')!='type here...'){
 			$this->db->where('(`name` LIKE "%'.$this->input->post('search_content').'%")');
         }
@@ -63,22 +59,7 @@ class Admincp_groups_model extends CI_Model {
 			return false;
 		}
     }
-
-	public function getGroups($filters = array()){
-		if(isset($filters['status'])) {
-			$this->db->where('status', (int)$filters['status']);
-        }
-        if(!empty($filters['ignore_id'])) {
-            $this->db->where('id !=', (int)$filters['ignore_id']);
-        }
-        $query = $this->db->get($this->table);
-        
-        if($query->result_array()){
-            return $query->result_array();
-        }
-        return false;
-    }
-
+    
     public function delete($ids = array()) {
         $this->db->where_in('id', $ids);
         if($this->db->delete($this->table)){
@@ -96,28 +77,19 @@ class Admincp_groups_model extends CI_Model {
         return false;
 	}
 	
-	public function add() {
-		$data = array(
-			'name' => ucwords(trim($this->input->post('name'))),
-			'status' => (int)$this->input->post('status'),
-			'created' => date('Y-m-d H:i:s') 
-		);
+	public function add($module, $status = 1, $sort = 0) {
+		$data = array();
+        $data['name'] = ucwords(str_replace('_', ' ', $module));
+        $data['name_function'] = $module;
+        $data['status'] = $status;
+        $data['sort'] = $sort;
+        $data['created'] = getNow();
 		if($this->db->insert($this->table, $data)){
 			return true;
 		}
 		return false;
 	}
-
-	public function edit($id) {
-		$data['status'] = (int)$this->input->post('status');
-		$data['name'] = ucwords(trim($this->input->post('name')));
-		$data['updated'] = date('Y-m-d H:i:s');
-		$this->db->where('id', (int)$id);
-		if($this->db->update($this->table, $data)) {
-			return true;
-		}
-		return false;
-	}
+	
 
 	public function checkExistByIndex($index, $value){
 		if(is_array($index) && is_array($index) && count($index) == count($value)) {
@@ -127,13 +99,13 @@ class Admincp_groups_model extends CI_Model {
 		} else {
 			$this->db->where($index, $value);
 		}
-        $query = $this->db->get($this->table);
+		$query = $this->db->get($this->table);
 		if($query->row_array()){
 			return true;
 		}
 		return false;
-    }
-    
+	}
+
 	public function checkExistByIndexAndId($index, $value, $id){
         $this->db->where($index, $value);
         $this->db->where('id != ', $id);
@@ -154,52 +126,27 @@ class Admincp_groups_model extends CI_Model {
 		return false;
 	}
 
-	public function addPerms() {
-		$group_id = (int)$this->input->post('group');
-		$perms = $this->input->post('perm');
-		/* delete all fisrt */ 
-		$this->db->where('group_id', $group_id);
-		$this->db->delete('admincp_perms');
-
-		$this->load->model('admincp_modules/admincp_modules_model');
-		$modules = mapping($this->admincp_modules_model->getModules(), 'name_function', 'id');
-
-		if(!empty($perms) && is_array($perms)) {
-			$data = array();
-			foreach($perms as $name_function => $perm) {
-				foreach($perm as $role => $val) {
-					$array_perm = array(
-						'group_id' => $group_id,
-						'module_function' => $name_function,
-						'module_id' => isset($modules[$name_function]) ? $modules[$name_function] : 0,
-						'role' => trim($role)
-					);
-					$data[] = $array_perm;
-				}
-			}
-			
-			if($this->db->insert_batch('admincp_perms', $data)){
-				return true;
-			} else {
-				return fasle;
-			}
-		}
-	}
-
-	public function getPerms($group_id) {
-		$this->db->where('group_id', $group_id);
-		$query = $this->db->get('admincp_perms');
-
-		if($query->result_array()) {
-			$data = array();
-			foreach($query->result_array() as $perm) {
-				if(!isset($data[$perm['module_function']])) {
-					$data[$perm['module_function']] = array();
-				}
-				$data[$perm['module_function']][$perm['role']] = $perm['role'];
-			}
-			return $data;
+	public function edit($id) {
+		$data['name_function'] = trim($this->input->post('name_function'));
+		$data['name'] =  ucwords(str_replace('_', ' ', $data['name_function']));
+		// $data['status'] = (int)$this->input->post('status');
+		$this->db->where('id', $id);
+		if($this->db->update($this->table, $data)) {
+			return true;
 		}
 		return false;
 	}
+	
+    public function getModules($filters = array()){
+        $this->db->select('*');
+        if(isset($filters['status'])) {
+            $this->db->where('status', (int)$filters['status']);
+        }
+        $this->db->order_by('sort','ASC');
+        $query = $this->db->get($this->table);
+        if($query->result_array()) {
+            return $query->result_array();
+        }
+        return false;
+    }
 }

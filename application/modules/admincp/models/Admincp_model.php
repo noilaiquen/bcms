@@ -1,49 +1,5 @@
 <?php
 class Admincp_model extends CI_Model {
-    public function getModules($filters = array()){
-        $this->db->select('*');
-        if(isset($filters['status'])) {
-            $this->db->where('status', (int)$filters['status']);
-        }
-        $this->db->order_by('sort','ASC');
-        $query = $this->db->get('admincp_modules');
-        if($query->result_array()) {
-            return $query->result_array();
-        }
-        return false;
-    }
-
-    public function addModule($module_name, $sort = 0) {
-        $data = array();
-        $data['name'] = ucwords(str_replace('_', ' ', $module_name));
-        $data['name_function'] = $module_name;
-        $data['status'] = 0;
-        $data['sort'] = $sort;
-        $data['created'] = getNow();
-        $this->db->insert('admincp_modules', $data);
-    }
-
-    public function getModule($module_id = 0) {
-        $this->db->where('module_id', (int)$module_id);
-        $module = $this->db->get('admincp_modules')->row_array();
-
-        if($module) {
-            return $module;
-        } 
-        return false;
-    }
-
-    function checkModules($module){
-		$this->db->select('module_id,name');
-		$this->db->where('name_function',$module);
-        $query = $this->db->get('admincp_modules');
-        
-		if($query->row_array()){
-			return $query->row_array();
-		}else{
-			return false;
-		}
-    }
     
     public function getAccountInfo() {
         $username = $this->input->post('username');
