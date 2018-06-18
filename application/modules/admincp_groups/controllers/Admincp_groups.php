@@ -1,12 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Group extends MY_Controller {
-    private $module = 'admincp_accounts';
-    private $controller = 'group';
+class Admincp_groups extends MY_Controller {
+    private $module = 'admincp_groups';
+    private $controller = '';
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('admincp_groups_model');
+        $this->load->model('admincp_groups_model', 'model');
     }
 
     public function index() {
@@ -17,8 +17,8 @@ class Group extends MY_Controller {
         $data['module'] = $this->module;
         $data['controller'] = $this->controller;
         $data['title'] = 'Admincp | Accounts group';
-        $data['add_new'] =  PATH_URL.$this->module.'/'.$this->controller.'/add/';
-        $data['template'] = 'group/index';
+        $data['add_new'] =  PATH_URL.$this->module.'/add/';
+        $data['template'] = 'index';
         $this->load->view($this->template_admin, $data);
     }
 
@@ -29,8 +29,8 @@ class Group extends MY_Controller {
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
                 $name = trim($this->input->post('name'));
-                if(!$this->admincp_groups_model->checkExistByIndex('name', $name)){
-                    if($this->admincp_groups_model->add()) {
+                if(!$this->model->checkExistByIndex('name', $name)){
+                    if($this->model->add()) {
                         $json['status'] = 1;
                         $json['message'] = 'Add success!';
                     } else {
@@ -54,8 +54,8 @@ class Group extends MY_Controller {
             $data['module'] = $this->module;
             $data['controller'] = $this->controller;
             $data['title'] = 'Admincp | Add group';
-            $data['form_action'] = PATH_URL.$this->module.'/'.$this->controller.'/add/';
-            $data['template'] = 'group/ajax_editContent';
+            $data['form_action'] = PATH_URL.$this->module.'/add/';
+            $data['template'] = 'ajax_editContent';
             $this->load->view($this->template_admin, $data);
         }
     }
@@ -67,8 +67,8 @@ class Group extends MY_Controller {
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
                 $name = trim($this->input->post('name'));
-                if(!$this->admincp_groups_model->checkExistByIndexAndId('name', $name, $id)){
-                    if($this->admincp_groups_model->edit($id)) {
+                if(!$this->model->checkExistByIndexAndId('name', $name, $id)){
+                    if($this->model->edit($id)) {
                         $json['status'] = 1;
                         $json['message'] = 'Edit success!';
                     } else {
@@ -92,18 +92,18 @@ class Group extends MY_Controller {
 
                 $this->load->model('admincp_modules/admincp_modules_model');
 
-                $data['perms'] = $this->admincp_groups_model->getPerms($id);
+                $data['perms'] = $this->model->getPerms($id);
                 $data['modules'] = $this->admincp_modules_model->getModules(array('status' => 1));
-                $data['info'] = $this->admincp_groups_model->getByIndex('id', $id); 
+                $data['info'] = $this->model->getByIndex('id', $id); 
                 $data['module'] = $this->module;
                 $data['controller'] = $this->controller;
                 $data['title'] = 'Admincp | Edit group';
-                $data['form_action'] = PATH_URL.$this->module.'/'.$this->controller.'/edit/'.$id;
-                $data['form_perm'] = PATH_URL.$this->module.'/'.$this->controller.'/addPerms/';
-                $data['template'] = 'group/ajax_editContent';
+                $data['form_action'] = PATH_URL.$this->module.'/edit/'.$id;
+                $data['form_perm'] = PATH_URL.$this->module.'/addPerms/';
+                $data['template'] = 'ajax_editContent';
                 $this->load->view($this->template_admin, $data);
             } else {
-                redirect(PATH_URL.$this->module.'/'.$this->controller);
+                redirect(PATH_URL.$this->module);
             }
         }
     }
@@ -118,25 +118,25 @@ class Group extends MY_Controller {
         $config['start'] = $start;
 		$config['num_links'] = 3;
 		$config['func_ajax'] = 'searchContent';
-        $config['total_rows'] = $total =  $this->admincp_groups_model->getTotalsearchContent();
+        $config['total_rows'] = $total =  $this->model->getTotalsearchContent();
         $this->adminpagination->initialize($config);
         $data = array(
-            'results' => $this->admincp_groups_model->getsearchContent($per_page, $start),
+            'results' => $this->model->getsearchContent($per_page, $start),
             'total' => $total,
             'start' => $start,
             'module' => $this->module,
             'controller' => $this->controller,
-            'edit_url' => PATH_URL.$this->module.'/'.$this->controller.'/edit/'
+            'edit_url' => PATH_URL.$this->module.'/edit/'
         );
 		$this->session->set_userdata('start', $start);
-        $this->load->view('group/ajax_loadContent', $data);
+        $this->load->view('ajax_loadContent', $data);
     }
 
     public function addPerms() {
         modules::run('admincp/checkPerm', $this->module, 'w', true);
         $json = array();
         if($_POST || $_POST['group']) {
-            if($this->admincp_groups_model->addPerms()){
+            if($this->model->addPerms()){
                 $json['status'] = 1;
                 $json['message'] = 'Update success.';
             } else {
@@ -156,7 +156,7 @@ class Group extends MY_Controller {
         if(!empty($this->input->post('ids'))) {
             $ids = $this->input->post('ids');
             if(!in_array(1, $ids)) {
-                if($this->admincp_groups_model->delete($ids)){
+                if($this->model->delete($ids)){
                     $json['status'] = 1;
                     $json['message'] = 'Success.';
                 } else {
@@ -185,7 +185,7 @@ class Group extends MY_Controller {
 			}
             $data['status'] = $status;
             $data['id'] = $id;
-            $this->admincp_groups_model->updateStatus($id, $status);
+            $this->model->updateStatus($id, $status);
             $this->load->view('management/ajax_updateStatus', $data);
         }
     }
