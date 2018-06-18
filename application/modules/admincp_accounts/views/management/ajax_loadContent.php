@@ -1,0 +1,38 @@
+<table class="table table-bordered table-striped dataTable">
+    <thead>
+        <tr role="row">
+            <th class="center">No.</th>
+            <th class="center"><input type="checkbox" id="selectAllItems" onclick="selectAllItems(<?=count($results)?>)"></th>
+            <th class="sorting" onclick="sort('username')" id="username">Username</th>
+            <th class="center sorting" onclick="sort('group_id')" id="group_id">Group</th>
+            <th class="center sorting" onclick="sort('status')" id="status">Status</th>
+            <th class="center sorting" onclick="sort('created')" id="created">Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if(!empty($results)){
+            $i = 0;
+            foreach($results as $key => $result) { ?>
+                <tr class="item_row<?=$i?>">
+                    <td class="num_row center"><?=$key + 1?></td>
+                    <td class="num_row center"><input type="checkbox" id="item<?=$i?>" onclick="selectItem(<?=$i?>)" value="<?=$result['id']?>"></td>
+                    <td><a href="<?=$edit_url.$result['id']?>"><?=$result['username']?></a></td>
+                    <td class="center" style="width: 150px"><?=$result['group_name']?></td>
+                    <td class="center" style="width: 150px" id="updateStatus<?=$result['id']?>">
+                        <a href="javascript:void(0)" onclick="updateStatus('<?=$result['id']?>', '<?=$result['status']?>')">
+                            <span class="badge bg-<?=$result['status']==1?'success':'danger';?>"><?=$result['status']==1?'Active':'Disable';?></span>
+                        </a>
+                    </td>
+                    <td class="center" style="width: 150px"><?=$result['created'];?></td>
+                </tr>
+            <?php  $i++; }
+        } else { ?>
+            <tr>
+                <td colspan="6" class="center">No data!</td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+<div>
+    <?=$this->adminpagination->create_links();?>
+</div>

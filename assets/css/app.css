@@ -1,0 +1,10 @@
+.row_active{
+    background-color: antiquewhite !important
+}
+
+.num_row{
+    width: 50px;
+}
+.center{
+    text-align: center !important
+}
