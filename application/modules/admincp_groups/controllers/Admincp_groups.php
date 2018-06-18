@@ -6,7 +6,7 @@ class Admincp_groups extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('admincp_groups_model', 'model');
+        $this->load->model('admincp_groups_model');
     }
 
     public function index() {
@@ -29,8 +29,8 @@ class Admincp_groups extends MY_Controller {
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
                 $name = trim($this->input->post('name'));
-                if(!$this->model->checkExistByIndex('name', $name)){
-                    if($this->model->add()) {
+                if(!$this->admincp_groups_model->checkExistByIndex('name', $name)){
+                    if($this->admincp_groups_model->add()) {
                         $json['status'] = 1;
                         $json['message'] = 'Add success!';
                     } else {
@@ -67,8 +67,8 @@ class Admincp_groups extends MY_Controller {
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
                 $name = trim($this->input->post('name'));
-                if(!$this->model->checkExistByIndexAndId('name', $name, $id)){
-                    if($this->model->edit($id)) {
+                if(!$this->admincp_groups_model->checkExistByIndexAndId('name', $name, $id)){
+                    if($this->admincp_groups_model->edit($id)) {
                         $json['status'] = 1;
                         $json['message'] = 'Edit success!';
                     } else {
@@ -92,9 +92,9 @@ class Admincp_groups extends MY_Controller {
 
                 $this->load->model('admincp_modules/admincp_modules_model');
 
-                $data['perms'] = $this->model->getPerms($id);
+                $data['perms'] = $this->admincp_groups_model->getPerms($id);
+                $data['info'] = $this->admincp_groups_model->getByIndex('id', $id); 
                 $data['modules'] = $this->admincp_modules_model->getModules(array('status' => 1));
-                $data['info'] = $this->model->getByIndex('id', $id); 
                 $data['module'] = $this->module;
                 $data['controller'] = $this->controller;
                 $data['title'] = 'Admincp | Edit group';
@@ -118,10 +118,10 @@ class Admincp_groups extends MY_Controller {
         $config['start'] = $start;
 		$config['num_links'] = 3;
 		$config['func_ajax'] = 'searchContent';
-        $config['total_rows'] = $total =  $this->model->getTotalsearchContent();
+        $config['total_rows'] = $total =  $this->admincp_groups_model->getTotalsearchContent();
         $this->adminpagination->initialize($config);
         $data = array(
-            'results' => $this->model->getsearchContent($per_page, $start),
+            'results' => $this->admincp_groups_model->getsearchContent($per_page, $start),
             'total' => $total,
             'start' => $start,
             'module' => $this->module,
@@ -136,7 +136,7 @@ class Admincp_groups extends MY_Controller {
         modules::run('admincp/checkPerm', $this->module, 'w', true);
         $json = array();
         if($_POST || $_POST['group']) {
-            if($this->model->addPerms()){
+            if($this->admincp_groups_model->addPerms()){
                 $json['status'] = 1;
                 $json['message'] = 'Update success.';
             } else {
@@ -156,7 +156,7 @@ class Admincp_groups extends MY_Controller {
         if(!empty($this->input->post('ids'))) {
             $ids = $this->input->post('ids');
             if(!in_array(1, $ids)) {
-                if($this->model->delete($ids)){
+                if($this->admincp_groups_model->delete($ids)){
                     $json['status'] = 1;
                     $json['message'] = 'Success.';
                 } else {
@@ -185,7 +185,7 @@ class Admincp_groups extends MY_Controller {
 			}
             $data['status'] = $status;
             $data['id'] = $id;
-            $this->model->updateStatus($id, $status);
+            $this->admincp_groups_model->updateStatus($id, $status);
             $this->load->view('management/ajax_updateStatus', $data);
         }
     }

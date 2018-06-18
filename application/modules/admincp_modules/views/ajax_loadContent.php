@@ -15,7 +15,7 @@
                 <tr class="item_row<?=$i?>">
                     <td class="num_row center"><?=$key + 1?></td>
                     <td class="num_row center"><input type="checkbox" id="item<?=$i?>" onclick="selectItem(<?=$i?>)" value="<?=$result['id']?>"></td>
-                    <td><a href="<?=$edit_url.$result['id']?>"><?=$result['name']?></a></td>
+                    <td><a href="javascript:void(0)"><?=$result['name']?></a></td>
                     <td class="center" style="width: 150px" id="updateStatus<?=$result['id']?>">
                         <a href="javascript:void(0)" onclick="updateStatus('<?=$result['id']?>', '<?=$result['status']?>')">
                             <span class="badge bg-<?=$result['status']==1?'success':'danger';?>"><?=$result['status']==1?'Active':'Disable';?></span>

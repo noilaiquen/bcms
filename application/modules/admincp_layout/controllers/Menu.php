@@ -6,7 +6,7 @@ class Menu extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('admincp_layout_model', 'model');
+        $this->load->model('admincp_layout_model');
     }
 
     public function index() {
@@ -20,7 +20,7 @@ class Menu extends MY_Controller {
             // 'status' => 1,
             'parent' => 0
         );
-        $data['menu'] = $this->model->getMenus($filters);
+        $data['menu'] = $this->admincp_layout_model->getMenus($filters);
         $data['modules'] = $this->admincp_modules_model->getModules(array('status' => 1));
         $data['module'] = $this->module;
         $data['controller'] = $this->controller;
@@ -35,7 +35,7 @@ class Menu extends MY_Controller {
         $json = array();
         $validate = $this->validateForm();
         if($validate && !is_array($validate)) {
-            if($this->model->add()) {
+            if($this->admincp_layout_model->add()) {
                 $json['status'] = 1;
                 $json['message'] = 'Add success!';
             } else {
@@ -56,7 +56,7 @@ class Menu extends MY_Controller {
             // 'status' => 1,
             // 'parent' => 0
         );
-        $menu = $this->model->getMenus($filters);
+        $menu = $this->admincp_layout_model->getMenus($filters);
         hierarchy_menu($menu);
     }
 
@@ -65,7 +65,7 @@ class Menu extends MY_Controller {
             'site' => 'admin',
             'status' => 1
         );
-        $results = $this->model->getMenus($filters);
+        $results = $this->admincp_layout_model->getMenus($filters);
         $menuPermsView = $this->getMenuPermsView();
         $data['menu_hierarchy'] = $this->buildMenuHierarchy($results, $menuPermsView);
         $data['module'] = $this->uri->segment(1);

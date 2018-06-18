@@ -6,7 +6,7 @@ class Admincp_accounts extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('admincp_accounts_model', ',model');
+        $this->load->model('admincp_accounts_model');
     }
 
     public function index() {
@@ -31,8 +31,8 @@ class Admincp_accounts extends MY_Controller {
             $json = array();
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
-                if(!$this->model->checkExistByIndex('username',trim($this->input->post('username')))){
-                    if($this->model->add()) {
+                if(!$this->admincp_accounts_model->checkExistByIndex('username',trim($this->input->post('username')))){
+                    if($this->admincp_accounts_model->add()) {
                         $json['status'] = 1;
                         $json['message'] = 'Add success!';
                     } else {
@@ -77,8 +77,8 @@ class Admincp_accounts extends MY_Controller {
             if($validate && !is_array($validate)) {
                 $indexs = array('id', 'username');
                 $values = array($id, trim($this->input->post('username')));
-                if($this->model->checkExistByIndex($indexs, $values)){
-                    if($this->model->edit($id)) {
+                if($this->admincp_accounts_model->checkExistByIndex($indexs, $values)){
+                    if($this->admincp_accounts_model->edit($id)) {
                         $json['status'] = 1;
                         $json['message'] = 'Edit success!';
                     } else {
@@ -107,7 +107,7 @@ class Admincp_accounts extends MY_Controller {
                 );
 
                 $data['groups'] = $this->admincp_groups_model->getGroups($filter_group);
-                $data['info'] = $this->model->getByIndex('id', $id); 
+                $data['info'] = $this->admincp_accounts_model->getByIndex('id', $id); 
                 $data['module'] = $this->module;
                 $data['controller'] = $this->controller;
                 $data['title'] = 'Admincp | edit account';
@@ -124,14 +124,14 @@ class Admincp_accounts extends MY_Controller {
         modules::run('admincp/checkPerm', $this->module, 'r', true);
         $per_page = $this->input->post('per_page');
         $start = $this->input->post('start');
-        $results = $this->model->getsearchContent($per_page, $start);
+        $results = $this->admincp_accounts_model->getsearchContent($per_page, $start);
 
         $this->load->library('AdminPagination');
         $config['per_page'] = $per_page;
         $config['start'] = $start;
 		$config['num_links'] = 3;
 		$config['func_ajax'] = 'searchContent';
-        $config['total_rows'] = $total =  $this->model->getTotalsearchContent();
+        $config['total_rows'] = $total =  $this->admincp_accounts_model->getTotalsearchContent();
         $this->adminpagination->initialize($config);
 
         $data = array(
@@ -152,7 +152,7 @@ class Admincp_accounts extends MY_Controller {
         if(!empty($this->input->post('ids'))) {
             $ids = $this->input->post('ids');
             if(!in_array(1, $ids)) {
-                if($this->model->delete($ids)){
+                if($this->admincp_accounts_model->delete($ids)){
                     $json['status'] = 1;
                     $json['message'] = 'Success.';
                 } else {
@@ -181,7 +181,7 @@ class Admincp_accounts extends MY_Controller {
 			}
             $data['status'] = $status;
             $data['id'] = $id;
-            $this->model->updateStatus($id, $status);
+            $this->admincp_accounts_model->updateStatus($id, $status);
             $this->load->view('ajax_updateStatus', $data);
         }
     }
