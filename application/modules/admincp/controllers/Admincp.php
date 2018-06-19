@@ -6,7 +6,7 @@ class Admincp extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('admincp_model');
+        $this->load->model('admincp_model', 'model');
     }
 
     public function index() {
@@ -25,7 +25,7 @@ class Admincp extends MY_Controller {
             $validate = $this->validateForm();
             if($validate && !is_array($validate)) {
                 $this->load->model('admincp_accounts/admincp_accounts_model');
-                $info = $this->admincp_model->getAccountInfo();
+                $info = $this->model->getAccountInfo();
                 if($info) {
                     $this->session->set_userdata('account_info', $info);
                     $json['status'] = 1;

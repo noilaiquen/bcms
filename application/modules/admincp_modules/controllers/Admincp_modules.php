@@ -2,11 +2,10 @@
 
 class Admincp_modules extends MY_Controller {
     private $module = 'admincp_modules';
-    private $controller = '';
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('admincp_modules_model');
+        $this->load->model('admincp_modules_model','model');
     }
 
     public function index() {
@@ -16,7 +15,6 @@ class Admincp_modules extends MY_Controller {
         $this->breadcrumbs->set('Module');
 
         $data['module'] = $this->module;
-        $data['controller'] = $this->controller;
         $data['title'] = 'Admincp | Module';
         // $data['add_new'] = PATH_URL.$this->module.'/add/';
         $data['template'] = 'index';
@@ -31,8 +29,8 @@ class Admincp_modules extends MY_Controller {
     //         if($validate && !is_array($validate)) {
     //             $name_function = trim($this->input->post('name_function'));
     //             $status = (int)$this->input->post('status');
-    //             if(!$this->admincp_modules_model->checkExistByIndex('name_function', $name_function)){
-    //                 if($this->admincp_modules_model->add($name_function, $status)) {
+    //             if(!$this->model->checkExistByIndex('name_function', $name_function)){
+    //                 if($this->model->add($name_function, $status)) {
     //                     $json['status'] = 1;
     //                     $json['message'] = 'Add success!';
     //                 } else {
@@ -54,7 +52,6 @@ class Admincp_modules extends MY_Controller {
     //         $this->breadcrumbs->set('Add new');
 
     //         $data['module'] = $this->module;
-    //         $data['controller'] = $this->controller;
     //         $data['title'] = 'Admincp | Add module';
     //         $data['form_action'] = PATH_URL.$this->module.'/add/';
     //         $data['template'] = 'ajax_editContent';
@@ -69,8 +66,8 @@ class Admincp_modules extends MY_Controller {
     //         $validate = $this->validateForm();
     //         if($validate && !is_array($validate)) {
     //             $name_function = trim($this->input->post('name_function'));
-    //             if(!$this->admincp_modules_model->checkExistByIndexAndId('name_function', $name_function, $id)){
-    //                 if($this->admincp_modules_model->edit($id)) {
+    //             if(!$this->model->checkExistByIndexAndId('name_function', $name_function, $id)){
+    //                 if($this->model->edit($id)) {
     //                     $json['status'] = 1;
     //                     $json['message'] = 'Edit success!';
     //                 } else {
@@ -92,9 +89,8 @@ class Admincp_modules extends MY_Controller {
     //             $this->breadcrumbs->set('Module');
     //             $this->breadcrumbs->set('Edit');
 
-    //             $data['info'] = $this->admincp_modules_model->getByIndex('id', $id); 
+    //             $data['info'] = $this->model->getByIndex('id', $id); 
     //             $data['module'] = $this->module;
-    //             $data['controller'] = $this->controller;
     //             $data['title'] = 'Admincp | Edit Module';
     //             $data['form_action'] = PATH_URL.$this->module.'/edit/'.$id;
     //             $data['template'] = 'ajax_editContent';
@@ -109,14 +105,14 @@ class Admincp_modules extends MY_Controller {
         modules::run('admincp/checkPerm', $this->module, 'r', true);
         $per_page = $this->input->post('per_page');
         $start = $this->input->post('start');
-        $results = $this->admincp_modules_model->getsearchContent($per_page, $start);
+        $results = $this->model->getsearchContent($per_page, $start);
 
         $this->load->library('AdminPagination');
         $config['per_page'] = $per_page;
         $config['start'] = $start;
 		$config['num_links'] = 3;
 		$config['func_ajax'] = 'searchContent';
-        $config['total_rows'] = $total =  $this->admincp_modules_model->getTotalsearchContent();
+        $config['total_rows'] = $total =  $this->model->getTotalsearchContent();
         $this->adminpagination->initialize($config);
 
         $data = array(
@@ -124,7 +120,6 @@ class Admincp_modules extends MY_Controller {
             'total' => $total,
             'start' => $start,
             'module' => $this->module,
-            'controller' => $this->controller,
             'edit_url' => PATH_URL.$this->module.'/edit/'
         );
 		$this->session->set_userdata('start', $start);
@@ -137,7 +132,7 @@ class Admincp_modules extends MY_Controller {
         if(!empty($this->input->post('ids'))) {
             $ids = $this->input->post('ids');
             if(!in_array(1, $ids)) {
-                if($this->admincp_modules_model->delete($ids)){
+                if($this->model->delete($ids)){
                     $json['status'] = 1;
                     $json['message'] = 'Success.';
                 } else {
@@ -166,7 +161,7 @@ class Admincp_modules extends MY_Controller {
 			}
             $data['status'] = $status;
             $data['id'] = $id;
-            $this->admincp_modules_model->updateStatus($id, $status);
+            $this->model->updateStatus($id, $status);
             $this->load->view('ajax_updateStatus', $data);
         }
     }
@@ -204,7 +199,7 @@ class Admincp_modules extends MY_Controller {
 
     private function checkModule() {
         $path = APP_MODULE.'*';
-        $list_modules = $this->admincp_modules_model->getModules();
+        $list_modules = $this->model->getModules();
         $list_modules = mapping($list_modules, 'name_function');
 
         $modules = array();
@@ -215,7 +210,7 @@ class Admincp_modules extends MY_Controller {
             $module = $module_array[$count_segment -1];
 
             if(empty($list_modules[$module])) {
-                $this->admincp_modules_model->add($module, 0, $key+1);
+                $this->model->add($module, 0, $key+1);
             }
         }
     }

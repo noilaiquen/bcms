@@ -172,7 +172,8 @@ class Admincp_groups_model extends CI_Model {
 						'group_id' => $group_id,
 						'module_function' => $name_function,
 						'module_id' => isset($modules[$name_function]) ? $modules[$name_function] : 0,
-						'role' => trim($role)
+						'role' => trim($role),
+						'created' => getNow()
 					);
 					$data[] = $array_perm;
 				}
