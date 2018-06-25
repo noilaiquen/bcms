@@ -9,7 +9,13 @@ class Admincp_accounts_model extends CI_Model {
 		$this->db->limit($limit, $start);
 		$this->db->order_by($this->input->post('func_sort'), $this->input->post('type_sort'));
 
-		$this->db->where('admincp_accounts.id != 1');
+        //không lấy root
+        $this->db->where('admincp_accounts.id != 1');
+
+        //không lấy account cùng group
+        // if(isset($_SESSION['account_info']['group_id'])){
+        //     $this->db->where('group_id !=', $_SESSION['account_info']['group_id']);
+        // }
 		if($this->input->post('search_content')!='' && $this->input->post('search_content')!='type here...'){
 			$this->db->where('(`username` LIKE "%'.$this->input->post('search_content').'%")');
         }
@@ -30,7 +36,6 @@ class Admincp_accounts_model extends CI_Model {
 			$this->db->where('admincp_accounts.created <= "'.date('Y-m-d 23:59:59',strtotime($this->input->post('dateTo'))).'"');
         }
         $query = $this->db->get();
-        // p($this->db->last_query(),1);
 
 		if($query->result()){
 			return $query->result_array();
@@ -40,8 +45,13 @@ class Admincp_accounts_model extends CI_Model {
 	}
 	
 	function getTotalsearchContent(){
-		$this->db->select('*');
-		$this->db->where('id != 1');
+        $this->db->select('*');
+        //không lấy root
+        $this->db->where('id != 1');
+        //không lấy account cùng group
+        // if(isset($_SESSION['account_info']['group_id'])){
+        //     $this->db->where('group_id !=', $_SESSION['account_info']['group_id']);
+        // }
 		if($this->input->post('search_content')!='' && $this->input->post('search_content')!='type here...'){
 			$this->db->where('(`username` LIKE "%'.$this->input->post('search_content').'%")');
         }

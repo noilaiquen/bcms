@@ -72,9 +72,7 @@
                         <option value="50">50</option>
                     </select>
                 </div>
-                <div id="ajaxLoadContent">
-
-                </div>
+                <div id="ajaxLoadContent"></div>
             </div>
 		</div>
 	</div>
