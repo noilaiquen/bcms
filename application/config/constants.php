@@ -88,3 +88,6 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('DATETIME_FORMAT_DB', 'Y-m-d H:i:s');
 define('DEFAULT_SORT', 'ASC');
 define('DEFAULT_FUNC', 'id');
+
+/* json web token secret key */
+define('JWT_SECRET_KEY', 'CHI_MINH_ANH_BIET_MUAHAHA');
