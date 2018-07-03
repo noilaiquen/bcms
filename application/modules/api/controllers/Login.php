@@ -12,7 +12,7 @@ class Login extends MY_Controller {
 
     public function index() {
         $post = json_decode(file_get_contents('php://input'), true);
-        
+
         if(!empty($post['username']) && !empty($post['password'])) {
             $username = trim($post['username']);
             $password = $post['password'];
@@ -47,7 +47,7 @@ class Login extends MY_Controller {
         } else {
             $this->response->json(array(
                 'status' => 0, 
-                'message' => 'Missing params!'
+                'message' => 'Username or password can not be null!'
             ));
         }
     }
