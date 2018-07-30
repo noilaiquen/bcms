@@ -14,6 +14,8 @@ class Login extends MY_Controller {
         $post = json_decode(file_get_contents('php://input'), true);
 
         if(!empty($post['username']) && !empty($post['password'])) {
+            // write log
+            $this->write_log($post);
             $username = trim($post['username']);
             $password = $post['password'];
             $result = $this->model->userLogin($username, $password);
@@ -25,7 +27,7 @@ class Login extends MY_Controller {
                 $token['email']     = $result['email'];
                 $token['level']     = $result['level'];
                 $token['iat']       = $iat = time();
-                $token['exp']       = $iat + ((60 * 60) * 7);
+                $token['exp']       = $iat + 60;
                 $jwt = JWT::encode($token, JWT_SECRET_KEY);
                 
                 $this->response->json(array(
@@ -52,19 +54,30 @@ class Login extends MY_Controller {
         }
     }
 
+    public function write_log($info = array()){
+        $data['username'] = $info['username'];
+        $data['ip'] = '';
+        $data['created'] = date('Y-m-d H:i:s');
+
+        $this->model->writeLog($data);
+
+    }
+
     public function verify_token() {
-        if(!empty($_POST['token']) || !empty($_SERVER['HTTP_TOKEN'])) {
+        $post = json_decode(file_get_contents('php://input'), true);
+
+        if(!empty($post['token']) || !empty($_SERVER['HTTP_TOKEN'])) {
             if(!empty($_SERVER['HTTP_TOKEN'])) {
                 $token = $_SERVER['HTTP_TOKEN'];
             } else {
-                $token = $this->input->post('token');
+                $token = $post['token'];
             }
 
             try {
                 $payload = JWT::decode($token, JWT_SECRET_KEY, true);
                 if($payload->exp < time()) {
                     $this->response->json(array(
-                        'status' => 1,
+                        'status' => 0,
                         'message' => 'Token expire!'
                     ));
                 } else {

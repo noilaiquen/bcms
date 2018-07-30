@@ -11,5 +11,9 @@ class Api_model extends CI_Model {
             return $query->row_array();
         }
         return false;
-    } 
+    }
+
+    public function writeLog($data) {
+        $this->db->insert('log_login', $data);
+    }
 }

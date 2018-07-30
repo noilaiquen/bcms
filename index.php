@@ -318,6 +318,7 @@ switch (ENVIRONMENT)
     if(is_dir(APPPATH.'modules')) {
         define('APP_MODULE', APPPATH.'modules/');
     }
+   // echo PATH_URL; die();
 
 /*
  * --------------------------------------------------------------------
