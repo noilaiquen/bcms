@@ -7,4 +7,10 @@ class Response {
         echo json_encode($json);
         exit();
     }
+
+    public function html($html) {
+        header('Content-Type: text/html');
+        echo $html;
+        exit();
+    }
 }
