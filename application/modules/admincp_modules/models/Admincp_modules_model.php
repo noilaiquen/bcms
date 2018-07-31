@@ -142,6 +142,9 @@ class Admincp_modules_model extends CI_Model {
         if(isset($filters['status'])) {
             $this->db->where('status', (int)$filters['status']);
         }
+        if(isset($filters['site'])) {
+            $this->db->where('site', $filters['site']);
+        }
         $this->db->order_by('sort','ASC');
         $query = $this->db->get($this->table);
         if($query->result_array()) {

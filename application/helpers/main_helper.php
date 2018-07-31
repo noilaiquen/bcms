@@ -31,7 +31,7 @@ if (!function_exists('hierarchy_menu')) {
             foreach ($cate_child as $key => $item){
                 if($item['parent_id'] == 0) {
                     echo '<li class="nav-item has-treeview menu-open">';
-                    echo '<a href="javascript:void(0)" onclick="removeMenu('.$item['id'].')" class="nav-link active">';
+                    echo '<a href="javascript:void(0)" onclick="loadDetail('.$item['id'].')" class="nav-link active">';
                     echo '<i class="nav-icon fa '.$item['icon'].'"></i>';
                     // echo '<p>'.$char.$item['name'].'</p>';
                     echo '<p>'.$item['name'].'</p>';
@@ -39,7 +39,7 @@ if (!function_exists('hierarchy_menu')) {
                     echo '</li>';
                 } else {
                     echo '<li class="nav-item menu-open">';
-                    echo '<a href="javascript:void(0)" onclick="removeMenu('.$item['id'].')" class="nav-link child-active">';
+                    echo '<a href="javascript:void(0)" onclick="loadDetail('.$item['id'].')" class="nav-link child-active">';
                     echo '<i class="nav-icon fa '.$item['icon'].'"></i>';
                     // echo '<p>'.$char.$item['name'].'</p>';
                     echo '<p>'.$item['name'].'</p>';
