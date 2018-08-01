@@ -84,7 +84,7 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Save</button>
                     <button type="button" class="btn btn-danger" onclick="drop()">Drop</button>
-                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -177,14 +177,16 @@
     }
 
     function drop() {
-        $.post('<?=$delete?>', { menu_id: $('input[name="hidden_id"]').val()}, function(json) {
-            if(json.status == 1) {
-                showSuccess(json.message);
-                searchContent(0);
-            } else {
-                showError(json.message);
-            }
-            $('#detail_modal').modal('hide');
-        }, 'JSON')
+        if(window.confirm('Confirm')) {
+            $.post('<?=$delete?>', { menu_id: $('input[name="hidden_id"]').val()}, function(json) {
+                if(json.status == 1) {
+                    showSuccess(json.message);
+                    searchContent(0);
+                } else {
+                    showError(json.message);
+                }
+                $('#detail_modal').modal('hide');
+            }, 'JSON')
+        }
     }
 </script>

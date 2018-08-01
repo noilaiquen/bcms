@@ -1,5 +1,5 @@
-<div class="modal fade" id="modal-confirm"role="dialog">
-    <div class="modal-dialog">
+<div class="modal" id="modal-confirm"role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Alert !!!</h4>
@@ -9,7 +9,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" onclick="deleteAll()">Delete</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
