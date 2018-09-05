@@ -3,6 +3,7 @@
 class Admincp extends MY_Controller {
     private $module = 'admincp';
     private $controller = '';
+    
 
     public function __construct() {
         parent::__construct();
